@@ -1,0 +1,205 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "root";
+$database = "aicte3";
+// Create connection
+$conn = new mysqli($servername, $username, $password, $database);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+?>
+
+
+<?php
+
+
+//$conn = mysqli_connect("127.0.0.1","root","root","aicte3");
+
+//print_r($_SERVER);
+
+if($_SERVER["REQUEST_METHOD"]=="POST") {
+
+	//print_r($_POST);
+
+
+//}
+
+$district = $_POST["myDistrict"];
+$pHead = $_POST["pHead"];
+$pDesc = $_POST["pDesc"];
+$pDept = $_POST["myDept"];
+$pType = $_POST["pType"];
+$pId = substr(hash("sha256",$pHead.$pDesc.$pDept.$pType.time()),3,11);
+
+file_put_contents("../aicte3/aicte3Files/myProblems/$pId.txt",$pDesc);
+
+
+
+$sql = "INSERT INTO prob_$district VALUES('$pId','$pHead','$pId.txt','NOACTIVE','NONE','$pDept','$pType',0,'ADMIN')";
+
+$res = mysqli_query($conn,$sql);
+
+if($res) {
+
+print_r("ok");die();
+
+}else {
+//print_r(mysqli_error($conn));
+if("Duplicate entry 'helloworld' for key 'problemHead'"==mysqli_error($conn)) {
+	print_r("this problem statement already exist");
+}
+die();
+
+}
+
+}
+
+
+?>
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Example</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+  <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+  <link rel="stylesheet" href="st.css">
+  
+</style>	
+</head>
+<body>
+<!-- Bootstrap NavBar -->
+<nav class="navbar navbar-expand-md navbar-dark" style="background-color:#333;z-index:555;">
+  <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <a class="navbar-brand" href="#">
+    <img src="zivima.png" width="30" height="30" class="d-inline-block align-top" alt="">
+    <span class="menu-collapsed">ZIVIMA</span>
+  </a>
+  <div class="collapse navbar-collapse" id="navbarNavDropdown">
+  <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="">Welcome DC</a>
+            </li>
+        </ul>
+    <ul class="navbar-nav">
+      
+      <!-- This menu is hidden in bigger devices with d-sm-none. 
+           The sidebar isn't proper for smaller screens imo, so this dropdown menu can keep all the useful sidebar itens exclusively for smaller screens  -->
+      <li class="nav-item dropdown d-sm-block d-md-none">
+        <a class="nav-link dropdown-toggle" href="#" id="smallerscreenmenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Menu
+        </a>
+        <div class="dropdown-menu" aria-labelledby="smallerscreenmenu">
+            <a class="dropdown-item" href="#">Dashboard</a>
+            <a class="dropdown-item" href="#">Profile</a>
+            <a class="dropdown-item" href="#">Tasks</a>
+            <a class="dropdown-item" href="#">Etc ...</a>
+        </div>
+      </li><!-- Smaller devices menu END -->
+      
+    </ul>
+  </div>
+</nav>
+<!-- NavBar END -->
+
+
+<!-- Bootstrap row -->
+<div class="row" id="body-row">
+    <!-- Sidebar -->
+    <?php include('side-navbar.php'); ?>
+    <!-- MAIN -->
+
+	  <div class="py-5 text-white opaque-overlay" style="width:83%;float:left;background-image: url(&quot;https://pingendo.github.io/templates/sections/assets/cover_restaurant.jpg&quot;);">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <h1 class="text-gray-dark">Insert Problem</h1>
+          <p class="lead mb-4">Complete all the fields below to insert problem</p>
+          <form class="" method="post" action="">
+            <div class="form-group"> <label for="exampleFormControlTextarea1">Problem Statement</label> <textarea class="form-control" name="pHead" rows="3"></textarea> </div>
+            <div class="form-group"> <label for="exampleFormControlTextarea1">Problem Description</label> <textarea class="form-control" rows="10" name="pDesc"></textarea> </div>
+            <div class="form-row">
+              <div class="form-group col-md-6"> <label for="inputCity">State</label> 
+			  
+			  <select id="inputState" class="form-control" name="myState">
+                  <option value="Choose..." selected="">Choose...</option>
+                  <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+<option value="Andhra Pradesh">Andhra Pradesh</option>
+<option value="Uttaranchal">Uttaranchal</option>
+<option value="up">Uttar Pradesh</option>
+
+
+                  
+               </select> </div>
+              <div class="form-group col-md-6"> <label for="inputState">District</label> 
+			  <select id="inputState" class="form-control" name="myDistrict">
+        <option selected="" value="Choose...">Choose...</option>
+        <option value="Adilabad">Adilabad</option>
+<option value="bijnor">Bijnor</option>
+<option value="mb">Moradabsd</option>
+<option value="Bikaner">Bikaner</option>
+<option value="Yanam">Yanam</option>
+<option value="Yavatmal">Yavatmal</option>
+<option value="Zunheboto">Zunheboto</option>        
+      </select> </div>
+              <div class="form-row" style="width:100%">
+                <div class="form-group col-md-6"> <label for="inputCity">Department</label> 
+				
+				<select id="inputState" class="form-control" name="myDept">
+							<option selected="">Choose...</option>
+							<option value="0">Water</option>
+                            <option value="1">Soil</option>
+                            <option value="2">agriculture</option>
+                            <option value="3">commerce</option>
+               </select>
+			   </div>
+                <div class="form-group col-md-6"> <label for="inputCity">Category</label> 
+				
+				
+				<select id="inputState" class="form-control" name="pType">
+                  
+        <option selected="">Choose...</option>
+
+                            <option value="H">Hardware</option>
+                            <option value="S">Software</option>
+               </select> </div>
+                <!--div class="form-group col-md-6"> <label for="inputState">Periority</label> <select id="inputState" class="form-control">
+        <option selected="">Choose...</option>
+                <option value="2401">Low</option>
+                            <option value="2402">Meadium</option>
+                            <option value="2403">High</option>
+                        
+                  </select> </div-->
+              </div>
+              <br>
+              <button type="submit" class="btn btn-primary">Submit </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	
+	
+	
+	
+
+
+</body>
+</html>
